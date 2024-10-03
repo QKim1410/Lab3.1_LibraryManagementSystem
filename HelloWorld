@@ -243,3 +243,47 @@ JLabel lblNewLabel_2_1 = new JLabel("Sorted BookList");
    	        }
    	    }
    	});
+JButton btnSortBooks = new JButton("Sort Books");
+     btnSortBooks.setBackground(new Color(0, 255, 255));
+     btnSortBooks.setFont(new Font("Georgia", Font.PLAIN, 30));
+     btnSortBooks.setBounds(700, 138, 297, 107);
+     panel_2.add(btnSortBooks);
+     btnSortBooks.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+             sortedBookListModel.clear();
+             bookList.stream().sorted().forEach(sortedBookListModel::addElement);
+         }
+     });
+     JButton btnSortBooks2 = new JButton("Sort Books 2");
+     btnSortBooks2.setBackground(new Color(0, 255, 255));
+     btnSortBooks2.setFont(new Font("Georgia", Font.PLAIN, 30));
+     btnSortBooks2.setBounds(700, 255, 297, 107);
+     panel_2.add(btnSortBooks2);
+     btnSortBooks2.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+             sortedBookList2Model.clear();
+             bookList.stream().sorted().forEach(sortedBookList2Model::addElement);
+         }
+     });
+ }
+ private void updateBookList() {
+     unsortedBookListModel.clear();
+     bookList.forEach(unsortedBookListModel::addElement);
+ }
+ private class ListTransferHandler extends TransferHandler {
+     public Transferable createTransferable(JComponent c) {
+         JList<?> source = (JList<?>) c;
+         List<?> selectedValues = source.getSelectedValuesList();
+         return new StringSelection(String.join(",", (List<String>) selectedValues));
+     }
+     public int getSourceActions(JComponent c) {
+         return COPY_OR_MOVE;
+     }
+     public boolean canImport(TransferSupport support) {
+         return support.isDataFlavorSupported(DataFlavor.stringFlavor);
+     }
+     public boolean importData(TransferSupport support) {
+         if (!canImport(support)) {
+             return false;
+         }
+
