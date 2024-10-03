@@ -98,3 +98,88 @@ public class library extends JFrame {
       panel_1.setBackground(new Color(128, 255, 255));
       contentPane.add(panel_1);
       panel_1.setLayout(null);
+ JButton btnRemoveABook = new JButton("Remove a Book");
+     btnRemoveABook.setBackground(new Color(255, 0, 0));
+     btnRemoveABook.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+             String selectedBook = unsortedBookList.getSelectedValue();
+             if (selectedBook != null) {
+              
+                 bookList.remove(selectedBook);
+                 undoStack.push(new String[]{"add", selectedBook, "unsorted"});
+                 updateBookList();
+             } else {
+                 selectedBook = sortedBookList.getSelectedValue();
+                 if (selectedBook != null) {
+            
+                     sortedBookListModel.removeElement(selectedBook);
+                     undoStack.push(new String[]{"add", selectedBook, "sorted1"});
+                     bookList.remove(selectedBook);
+                 } else {
+                     selectedBook = sortedBookList2.getSelectedValue();
+                     if (selectedBook != null) {
+          
+                         sortedBookList2Model.removeElement(selectedBook);
+                         undoStack.push(new String[]{"add", selectedBook, "sorted2"});
+                         bookList.remove(selectedBook);
+                     } else {
+                         JOptionPane.showMessageDialog(library.this, "Please select a book to remove.");
+                     }
+                 }
+             }
+         }
+     });
+     btnRemoveABook.setFont(new Font("Georgia", Font.PLAIN, 30));
+     btnRemoveABook.setBounds(345, 11, 342, 107);
+     panel_2.add(btnRemoveABook);
+     JButton btnUndo = new JButton("Undo");
+     btnUndo.setBackground(new Color(255, 255, 0));
+     btnUndo.setFont(new Font("Georgia", Font.PLAIN, 30));
+     btnUndo.setBounds(700, 11, 297, 107);
+     panel_2.add(btnUndo);
+     btnUndo.addActionListener(new ActionListener() {
+   	    public void actionPerformed(ActionEvent e) {
+   	        if (!undoStack.isEmpty()) {
+   	            String[] lastAction = undoStack.pop();
+   	            String actionType = lastAction[0];
+   	            String bookTitle = lastAction[1];
+   	            String targetList = lastAction[2];
+   	            if ("move".equals(actionType)) {
+   	                if ("sorted1".equals(targetList)) {
+   	                    sortedBookListModel.removeElement(bookTitle);
+   	                    unsortedBookListModel.addElement(bookTitle);
+   	                    bookList.add(bookTitle);
+   	                    selectionSort(sortedBookListModel);
+   	       
+   	                } else if ("sorted2".equals(targetList)) {
+   	                    sortedBookList2Model.removeElement(bookTitle);
+   	                    unsortedBookListModel.addElement(bookTitle);
+   	                    bookList.add(bookTitle);
+   	                    selectionSort(sortedBookList2Model);
+   	                }
+   	            } else if ("add".equals(actionType)) {
+   	                if ("unsorted".equals(targetList)) {
+   	             
+   	                    unsortedBookListModel.addElement(bookTitle);
+   	                    bookList.add(bookTitle);
+   	                } else if ("sorted1".equals(targetList)) {
+   	            
+   	                    sortedBookListModel.addElement(bookTitle);
+   	                    selectionSort(sortedBookListModel);
+   	                } else if ("sorted2".equals(targetList)) {
+   	            
+   	                    sortedBookList2Model.addElement(bookTitle);
+   	                    selectionSort(sortedBookList2Model);
+   	                }
+   	            }
+   	            if ("remove".equals(actionType)) {
+   	             
+   	                unsortedBookListModel.removeElement(bookTitle);
+   	                bookList.remove(bookTitle);
+   	            }
+   	            updateBookList();
+   	        } else {
+   	            JOptionPane.showMessageDialog(library.this, "No actions to undo.");
+   	        }
+   	    }
+   	});
