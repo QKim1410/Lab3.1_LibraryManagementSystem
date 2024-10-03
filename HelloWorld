@@ -98,6 +98,66 @@ public class library extends JFrame {
       panel_1.setBackground(new Color(128, 255, 255));
       contentPane.add(panel_1);
       panel_1.setLayout(null);
+JLabel lblNewLabel_2_1 = new JLabel("Sorted BookList");
+     lblNewLabel_2_1.setFont(new Font("Georgia", Font.BOLD, 28));
+     lblNewLabel_2_1.setBounds(191, 11, 244, 38);
+     panel_1_1.add(lblNewLabel_2_1);
+     sortedBookListModel = new DefaultListModel<>();
+     sortedBookList = new JList<>(sortedBookListModel);
+     sortedBookList.setBounds(345, 260, 652, 159);
+     contentPane.add(sortedBookList);
+     sortedBookList.setDropMode(DropMode.INSERT);
+     sortedBookList.setTransferHandler(new ListTransferHandler());
+     sortedBookList2Model = new DefaultListModel<>();
+     sortedBookList2 = new JList<>(sortedBookList2Model);
+     sortedBookList2.setBounds(345, 454, 652, 150);
+     contentPane.add(sortedBookList2);
+     sortedBookList2.setDropMode(DropMode.INSERT);
+     sortedBookList2.setTransferHandler(new ListTransferHandler());
+     JPanel panel_2 = new JPanel();
+     panel_2.setBounds(0, 615, 1007, 129);
+     panel_2.setLayout(null);
+     panel_2.setBackground(new Color(216, 214, 133));
+     contentPane.add(panel_2);
+     JButton btnAddBook = new JButton("Add a Book");
+     btnAddBook.setBackground(new Color(0, 255, 64));
+     btnAddBook.setForeground(new Color(0, 0, 0));
+     btnAddBook.setFont(new Font("Georgia", Font.PLAIN, 30));
+     btnAddBook.setBounds(10, 11, 325, 107);
+     panel_2.add(btnAddBook);
+     btnAddBook.addActionListener(new ActionListener() {
+   	    public void actionPerformed(ActionEvent e) {
+   	        String newBook = JOptionPane.showInputDialog("Enter a new book to add:");
+   	        if (newBook != null && !newBook.trim().isEmpty()) {
+   	            if (bookList.contains(newBook.trim())) {
+   	                JOptionPane.showMessageDialog(library.this, "This book already exists in the list.", "Error", JOptionPane.ERROR_MESSAGE);
+   	                return;
+   	            }
+   	            int insertChoice = JOptionPane.showConfirmDialog(library.this, "Would you like to insert the book at a specific index?", "Insert Choice", JOptionPane.YES_NO_OPTION);
+   	            if (insertChoice == JOptionPane.YES_OPTION) {
+   	                String indexStr = JOptionPane.showInputDialog("Enter the index to insert the book:");
+   	                try {
+   	                    int index = Integer.parseInt(indexStr);
+   	                    if (index >= 0 && index <= bookList.size()) {
+   	                        bookList.add(index, newBook.trim());
+   	                       
+   	                        undoStack.push(new String[]{"remove", newBook.trim(), "unsorted"});
+   	                        updateBookList();
+   	                    } else {
+   	                        JOptionPane.showMessageDialog(library.this, "Index out of range.", "Error", JOptionPane.ERROR_MESSAGE);
+   	                    }
+   	                } catch (NumberFormatException ex) {
+   	                    JOptionPane.showMessageDialog(library.this, "Invalid index entered. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+   	                }
+   	            } else {
+   	                bookList.add(newBook.trim());
+  
+   	                undoStack.push(new String[]{"remove", newBook.trim(), "unsorted"});
+   	                updateBookList();
+   	            }
+   	        }
+   	    }
+   	});
  JButton btnRemoveABook = new JButton("Remove a Book");
      btnRemoveABook.setBackground(new Color(255, 0, 0));
      btnRemoveABook.addActionListener(new ActionListener() {
