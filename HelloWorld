@@ -287,3 +287,52 @@ JButton btnSortBooks = new JButton("Sort Books");
              return false;
          }
 
+   JList<?> target = (JList<?>) support.getComponent();
+         DefaultListModel<String> targetModel = (DefaultListModel<String>) target.getModel();
+         DefaultListModel<String> sourceModel = (DefaultListModel<String>) (target == unsortedBookList ? sortedBookListModel : unsortedBookListModel);
+         try {
+             String data = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+             String[] booksToAdd = data.split(",");
+             for (String book : booksToAdd) {
+                 book = book.trim();
+                 if (!targetModel.contains(book)) {
+                     targetModel.addElement(book);
+                     sourceModel.removeElement(book);
+                   
+                     if (bookList.contains(book)) {
+                         bookList.remove(book);
+                     }
+                     String targetList = target == sortedBookList ? "sorted1" : "sorted2";
+                     undoStack.push(new String[]{"move", book, targetList});
+                 }
+             }
+             if (target == sortedBookList) {
+                 selectionSort(targetModel);
+             }
+             if (target == sortedBookList2) {
+                 selectionSort(targetModel);
+             }
+             return true;
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+         return false;
+     }
+ }
+ private void selectionSort(DefaultListModel<String> model) {
+	    int n = model.getSize();
+	    for (int i = 0; i < n - 1; i++) {
+	        int minIndex = i;
+	        for (int j = i + 1; j < n; j++) {
+	            if (model.get(j).compareTo(model.get(minIndex)) < 0) {
+	                minIndex = j;
+	            }
+	        }
+	        if (minIndex != i) {
+	            String temp = model.get(i);
+	            model.set(i, model.get(minIndex));
+	            model.set(minIndex, temp);
+	        }
+	    }
+	}
+}
